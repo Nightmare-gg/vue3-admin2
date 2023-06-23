@@ -27,6 +27,11 @@ export default createStore({
                 let result = state.tabsList.findIndex(item => item.name === val.name)
                 result == -1 ? state.tabsList.push(val) : ''
             }
+        },
+        // 关闭标签
+        closeTab(state, val) {
+            let res = state.tabsList.findIndex(item => item.name === val.name) 
+            state.tabsList.splice(res,1)
         }
     }
 })
