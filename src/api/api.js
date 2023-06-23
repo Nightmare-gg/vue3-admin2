@@ -24,5 +24,15 @@ export default {
             method: 'get',
             mock: true
         })
+    },
+    // 获取用户信息
+    getUserData(params) {
+        return request({
+            url: '/user/getUser',
+            method: 'get',
+            // mock为false否则调用的是mock线上数据
+            mock: false,
+            data: params
+        })
     }
 }
