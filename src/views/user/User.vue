@@ -50,21 +50,35 @@
   <el-form :inline="true" :model="formUser" ref="userForm" >
     <el-row>
         <el-col :span="12">
-            <el-form-item label="姓名" prop="name">
+            <el-form-item 
+            label="姓名"
+             prop="name"
+             :rules="[
+                {required: true,message: '请输入姓名'}
+             ]">
       <el-input v-model="formUser.name" placeholder="请输入姓名"/>
     </el-form-item>
         </el-col>
 
         <el-col :span="12">
-            <el-form-item label="年龄" prop="age">
-      <el-input v-model="formUser.age" placeholder="请输入年龄"/>
+            <el-form-item 
+            label="年龄" 
+            prop="age"
+            :rules="[
+                {required:true,message:'请输入年龄'},
+                {type:'number',message:'年龄必须为数字'}
+            ]">
+            <!-- 将age变为数字类型 -->
+      <el-input v-model.number="formUser.age" placeholder="请输入年龄"/>
     </el-form-item>
         </el-col>
     </el-row>
 
     <el-row>
         <el-col :span="12">
-            <el-form-item label="性别" prop="sex">
+            <el-form-item label="性别" prop="sex" :rules="[
+                {required: true,message: '请选择性别'}
+             ]">
                 <el-select v-model="formUser.sex" placeholder="请选择性别">
         <el-option label="男" value="0" />
         <el-option label="女" value="1" />
@@ -73,7 +87,9 @@
         </el-col>
 
         <el-col :span="12">
-            <el-form-item label="出生日期" prop="birth">
+            <el-form-item label="出生日期" prop="birth" :rules="[
+                {required: true,message: '请输入出生日期'}
+             ]">
                 <el-date-picker
             v-model="formUser.birth"
             type="date"
@@ -85,14 +101,16 @@
         </el-col>
     </el-row>
     <el-row>
-        <el-form-item label="地址" prop="addr">
+        <el-form-item label="地址" prop="addr" :rules="[
+                {required: true,message: '请输入地址'}
+             ]">
       <el-input v-model="formUser.addr" placeholder="请输入地址"/>
     </el-form-item>
     </el-row>
     
    <el-row style="justify-content: flex-end">
     <el-form-item>
-      <el-button type="primary" @click="dialogVisible=false">取消</el-button>
+      <el-button type="primary" @click="handleCancel">取消</el-button>
       <el-button type="primary" @click="onSubmit">确定</el-button>
     </el-form-item>
    </el-row>
@@ -120,7 +138,8 @@ const dialogVisible = ref(false)
 const handleClose = (done) => {
   ElMessageBox.confirm('确定要关闭对话框吗?')
     .then(() => {
-      done()
+        proxy.$refs.userForm.resetFields();
+        done()
     })
     .catch(() => {
       // catch error
@@ -199,19 +218,28 @@ const timeFormat = (time) => {
 }
 
 // 添加用户
-const onSubmit =async ()=> {
-    formUser.birth = timeFormat(formUser.birth)
-    let res = await proxy.$api.addUser(formUser);
-    // console.log(res);
-    // 1.添加成功 -》清空输入框，退出添加页面，重新调用获取新数据
-    if(res) {
-        dialogVisible.value = false;
-        // 添加prop属性才生效
-        proxy.$refs.userForm.resetFields();
-        getUserData(config);
+const onSubmit = ()=> {
+    proxy.$refs.userForm.validate(async (valid) => {
+        if(valid) {
+            formUser.birth = timeFormat(formUser.birth)
+            let res = await proxy.$api.addUser(formUser);
+            // console.log(res);
+            // 1.添加成功 -》清空输入框，退出添加页面，重新调用获取新数据
+             if(res) {
+             dialogVisible.value = false;
+             // 添加prop属性才生效
+            proxy.$refs.userForm.resetFields();
+            getUserData(config);
     }
+        }
+    });
 }
-
+// 点击取消时 关闭对话框，清空表单
+const handleCancel = ()=> {
+    dialogVisible.value = false;
+        // 添加prop属性才生效
+    proxy.$refs.userForm.resetFields();
+}
 onMounted(()=> {
     getUserData(config);
 })
