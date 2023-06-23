@@ -7,7 +7,12 @@
             <Menu />
         </el-icon>
        </el-button>
-       <h3>首页</h3>
+       <!-- 面包屑导航 -->
+       <el-breadcrumb separator="/" class="bread">
+        <!-- 首页是一定存在的所以直接写死 -->
+    <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+    <el-breadcrumb-item :to="current.path" v-if="current">{{current.label}}</el-breadcrumb-item>
+    </el-breadcrumb>
     </div>
     <div class="r_content">
       <el-dropdown>
@@ -26,6 +31,7 @@
 </template>
 
 <script setup>
+import { computed } from 'vue';
 import {useStore} from 'vuex'
 let store = useStore()
 
@@ -33,6 +39,11 @@ let handleCollapse = ()=> {
   // 调用vuex中的mutations
   store.commit("updateIsCollapse");
 }
+
+// 计算属性
+const current = computed(()=> {
+  return store.state.currentMenu;
+})
 </script>
 <style scoped lang="less">
 .header {
@@ -58,6 +69,11 @@ let handleCollapse = ()=> {
   h3 {
     color: #fff;
   }
+}
+// 样式穿透
+.bread /deep/ span {
+  color: #fff !important;
+  cursor: pointer !important;
 }
 
 </style>

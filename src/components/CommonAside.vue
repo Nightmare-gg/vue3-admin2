@@ -42,6 +42,7 @@
 
 <script setup>
 import { useRouter } from 'vue-router';
+import {useStore} from 'vuex'
     const list = [
     // {
     //       path: '/',
@@ -94,11 +95,14 @@ import { useRouter } from 'vue-router';
         return list.filter((item)=> item.children);
     }
     const router = useRouter()
+    const store = useStore()
     // 点击左侧菜单
     const clickMenu =(item)=> {
       router.push({
         name: item.name,
-      })
+      });
+      // vuex来管理
+      store.commit("selectMenu",item)
     }
 
 </script>
