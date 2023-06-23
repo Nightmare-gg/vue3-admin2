@@ -1,7 +1,7 @@
 <template>
     <!-- 搜索框 -->
     <div class="user-header">
-        <el-button type="primary">+新增</el-button>
+        <el-button type="primary" @click="dialogVisible = true">+新增</el-button>
         <el-form :inline="true" :model="formInline">
             <el-form-item label="请输入">
                 <el-input v-model="formInline.keyword" placeholder="请输入用户名"/>
@@ -40,6 +40,74 @@
     @current-change="changePage"
   />
 </div>
+<!-- 新增用户对话框 -->
+<el-dialog
+    v-model="dialogVisible"
+    title="新增用户"
+    width="35%"
+    :before-close="handleClose"
+  >
+  <el-form :inline="true" :model="formUser" >
+    <el-row>
+        <el-col :span="12">
+            <el-form-item label="姓名">
+      <el-input v-model="formUser.name" placeholder="请输入姓名"/>
+    </el-form-item>
+        </el-col>
+
+        <el-col :span="12">
+            <el-form-item label="年龄">
+      <el-input v-model="formUser.age" placeholder="请输入年龄"/>
+    </el-form-item>
+        </el-col>
+    </el-row>
+
+    <el-row>
+        <el-col :span="12">
+            <el-form-item label="性别">
+                <el-select v-model="formUser.sex" placeholder="请选择性别">
+        <el-option label="男" value="0" />
+        <el-option label="女" value="1" />
+      </el-select>
+    </el-form-item>
+        </el-col>
+
+        <el-col :span="12">
+            <el-form-item label="出生日期">
+                <el-date-picker
+            v-model="formUser.birth"
+            type="date"
+            label="出生日期"
+            placeholder="请输入"
+            style="width: 100%"
+          />
+    </el-form-item>
+        </el-col>
+    </el-row>
+    <el-row>
+        <el-form-item label="地址">
+      <el-input v-model="formUser.addr" placeholder="请输入地址"/>
+    </el-form-item>
+    </el-row>
+    
+   <el-row style="justify-content: flex-end">
+    <el-form-item>
+      <el-button type="primary" @click="dialogVisible=false">取消</el-button>
+      <el-button type="primary" @click="onSubmit">确定</el-button>
+    </el-form-item>
+   </el-row>
+  </el-form>
+  
+
+    <!-- <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="dialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="dialogVisible = false">
+         确定
+        </el-button>
+      </span>
+    </template> -->
+  </el-dialog>
 </template>
 
 <script setup>
@@ -47,6 +115,17 @@ import { getCurrentInstance,onMounted, reactive,ref } from 'vue';
 
 const {proxy} = getCurrentInstance()
 const list = ref([])
+// 控制添加用户框的显示隐藏
+const dialogVisible = ref(false)
+const handleClose = (done) => {
+  ElMessageBox.confirm('确定要关闭对话框吗?')
+    .then(() => {
+      done()
+    })
+    .catch(() => {
+      // catch error
+    })
+}
 // 表头字段
 const tableLabel = reactive([
     {
@@ -79,6 +158,15 @@ const config = reactive({
 });
 const formInline = reactive({
     keyword: "",
+})
+// 添加用户的form 数据
+const formUser = reactive({
+    // 添加用户的 用户名
+    name: "",
+    age: "",
+    sex: "",
+    birth: "",
+    addr: ""
 })
 const getUserData = async (config)=> {
     let res = await proxy.$api.getUserData(config);
