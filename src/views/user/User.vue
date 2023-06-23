@@ -1,6 +1,6 @@
 <template>
 <div class="table">
-    <el-table :data="list" style="width: 100%" height="500pxgit">
+    <el-table :data="list" style="width: 100%" height="500px">
         <el-table-column 
         v-for="item in tableLabel"
         :key="item.prop"
@@ -18,6 +18,14 @@
       </template>
     </el-table-column>
   </el-table>
+  <el-pagination
+    small
+    background
+    layout="prev, pager, next"
+    :total="config.total"
+    class="mt-4 page"
+    @current-change="changePage"
+  />
 </div>
 </template>
 
@@ -51,18 +59,36 @@ const tableLabel = reactive([
         width: 320,
     },
 ]);
-const getUserData = async ()=> {
-    let res = await proxy.$api.getUserData();
+const config = reactive({
+    total: 0,
+    page: 1,
+})
+const getUserData = async (config)=> {
+    let res = await proxy.$api.getUserData(config);
+    config.total = res.count
     list.value = res.list.map((item)=> {
         item.sexLabel = item.sex === 0 ? "女" : "男";
         return item;
     });
 };
+// 点击分页切换数据
+const changePage = (page)=> {
+    config.page=page;
+    getUserData(config)
+}
 
 onMounted(()=> {
-    getUserData();
+    getUserData(config);
 })
 </script>
-<style scoped>
-
+<style scoped lang="less">
+.table {
+    position: relative;
+    height: 520px;
+    .page {
+        position: absolute;
+        right: 0;
+        bottom: -20px;
+    }
+}
 </style>

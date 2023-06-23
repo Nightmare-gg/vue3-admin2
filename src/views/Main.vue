@@ -6,7 +6,7 @@
             <common-header/>
             <!-- tab -->
             <common-tab/>
-        <el-main>
+        <el-main class="right-main">
             <!-- 路由出口 -->
             <!-- 路由匹配到的组件将渲染在这里 -->
             <router-view/>
@@ -22,11 +22,19 @@ import CommonAside from "@/components/CommonAside.vue";
 import CommonTab from "@/components/CommonTab.vue";
 </script>
 <style lang="less" scoped>
+.el-container {
+    flex-wrap: wrap;
+    align-items: flex-start;
+    height: 100%;
+}
 .common-layout {
     width: 100vw;
     height: 100vh;
     .lay-container {
         flex-wrap: nowrap;
+        .right-main {
+            height: calc(100% - 124px) !important;
+        }
     }
     & > .el-container {
         height: 100%;
@@ -35,9 +43,5 @@ import CommonTab from "@/components/CommonTab.vue";
             background-color: #545c64;
         }
     }
-}
-.el-container {
-    flex-wrap: wrap;
-    align-items: flex-start;
 }
 </style>

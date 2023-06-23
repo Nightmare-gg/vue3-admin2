@@ -71,7 +71,11 @@ const current = computed(()=> {
   }
 }
 // 样式穿透
-.bread /deep/ span {
+// .bread /deep/ span {
+//   color: #fff !important;
+//   cursor: pointer !important;
+// }
+:deep(.bread span ){
   color: #fff !important;
   cursor: pointer !important;
 }
