@@ -1,4 +1,17 @@
 <template>
+    <!-- 搜索框 -->
+    <div class="user-header">
+        <el-button type="primary">+新增</el-button>
+        <el-form :inline="true" :model="formInline">
+            <el-form-item label="请输入">
+                <el-input v-model="formInline.keyword" placeholder="请输入用户名"/>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" @click="handleSearch">搜索</el-button>
+            </el-form-item>
+        </el-form>
+    </div>
+    <!-- 用户数据展示 -->
 <div class="table">
     <el-table :data="list" style="width: 100%" height="500px">
         <el-table-column 
@@ -62,6 +75,10 @@ const tableLabel = reactive([
 const config = reactive({
     total: 0,
     page: 1,
+    name: '',
+});
+const formInline = reactive({
+    keyword: "",
 })
 const getUserData = async (config)=> {
     let res = await proxy.$api.getUserData(config);
@@ -75,6 +92,11 @@ const getUserData = async (config)=> {
 const changePage = (page)=> {
     config.page=page;
     getUserData(config)
+}
+// 搜索框功能的实现
+const handleSearch = ()=> {
+  config.name = formInline.keyword;
+  getUserData(config)
 }
 
 onMounted(()=> {
@@ -90,5 +112,10 @@ onMounted(()=> {
         right: 0;
         bottom: -20px;
     }
+}
+
+.user-header {
+    display: flex;
+    justify-content: space-between;
 }
 </style>
