@@ -1,7 +1,7 @@
 <template>
     <!-- 搜索框 -->
     <div class="user-header">
-        <el-button type="primary" @click="dialogVisible = true">+新增</el-button>
+        <el-button type="primary" @click="handleAdd">+新增</el-button>
         <el-form :inline="true" :model="formInline">
             <el-form-item label="请输入">
                 <el-input v-model="formInline.keyword" placeholder="请输入用户名"/>
@@ -23,11 +23,13 @@
         />
 
         <el-table-column fixed="right" label="操作" min-width="180">
-      <template #default>
+      <template #default="scope">
         <el-button size="small"
-          >编辑</el-button
-        >
-        <el-button  type="danger" size="small">删除</el-button>
+        @click="handleEdit(scope.row)"
+          >编辑</el-button>
+        <el-button  type="danger" size="small" 
+        @click="handleDelete(scope.row)"
+        >删除</el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -43,7 +45,7 @@
 <!-- 新增用户对话框 -->
 <el-dialog
     v-model="dialogVisible"
-    title="新增用户"
+    :title="(action == 'add' ) ? '新增用户' : '编辑用户'"
     width="35%"
     :before-close="handleClose"
   >
@@ -221,6 +223,7 @@ const timeFormat = (time) => {
 const onSubmit = ()=> {
     proxy.$refs.userForm.validate(async (valid) => {
         if(valid) {
+           if(action.value=="add") {
             formUser.birth = timeFormat(formUser.birth)
             let res = await proxy.$api.addUser(formUser);
             // console.log(res);
@@ -230,7 +233,23 @@ const onSubmit = ()=> {
              // 添加prop属性才生效
             proxy.$refs.userForm.resetFields();
             getUserData(config);
+           }
+    }else {
+        // 编辑的接口
+        formUser.sex =="男" ? (formUser.sex=1) : (formUser.sex = 0);
+        let res = await proxy.$api.editUser(formUser);
+        if(res) {
+            dialogVisible.value = false;
+            proxy.$refs.userForm.resetFields();
+            getUserData(config)
+        }
     }
+        }else {
+            ElMessage({
+                showClose: true,
+                message: "请输入正确的内容",
+                type: "error"
+            })
         }
     });
 }
@@ -239,6 +258,38 @@ const handleCancel = ()=> {
     dialogVisible.value = false;
         // 添加prop属性才生效
     proxy.$refs.userForm.resetFields();
+}
+// 区分编辑和新增
+const action = ref("add")
+// 编辑用户
+const handleEdit = (row)=> {
+    // 浅拷贝
+    action.value="edit";
+    dialogVisible.value=true;
+    row.sex == 1 ? (row.sex="男") : (row.sex="女");
+    proxy.$nextTick(()=> {
+        Object.assign(formUser,row);
+    });
+};
+// 新增用户
+const handleAdd = ()=> {
+    action.value="add";
+    dialogVisible.value=true;
+}
+// 删除用户
+const handleDelete = (row)=> {
+    ElMessageBox.confirm('确定要删除吗?')
+    .then(async () => {
+        await proxy.$api.deleteUser({
+            id: row.id,
+        });
+        ElMessage({
+            showClose: true,
+            message: "删除成功！",
+            type: "success",
+        });
+        getUserData(config);
+    })
 }
 onMounted(()=> {
     getUserData(config);
