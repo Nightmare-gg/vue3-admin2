@@ -4,6 +4,8 @@
       <common-aside/>
       <el-container class="r-container">
             <common-header/>
+            <!-- tab -->
+            <common-tab/>
         <el-main>
             <!-- 路由出口 -->
             <!-- 路由匹配到的组件将渲染在这里 -->
@@ -17,6 +19,7 @@
 <script setup>
 import CommonHeader from "@/components/CommonHeader.vue"
 import CommonAside from "@/components/CommonAside.vue";
+import CommonTab from "@/components/CommonTab.vue";
 </script>
 <style lang="less" scoped>
 .common-layout {
