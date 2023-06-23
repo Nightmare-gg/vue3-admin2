@@ -47,16 +47,16 @@
     width="35%"
     :before-close="handleClose"
   >
-  <el-form :inline="true" :model="formUser" >
+  <el-form :inline="true" :model="formUser" ref="userForm" >
     <el-row>
         <el-col :span="12">
-            <el-form-item label="姓名">
+            <el-form-item label="姓名" prop="name">
       <el-input v-model="formUser.name" placeholder="请输入姓名"/>
     </el-form-item>
         </el-col>
 
         <el-col :span="12">
-            <el-form-item label="年龄">
+            <el-form-item label="年龄" prop="age">
       <el-input v-model="formUser.age" placeholder="请输入年龄"/>
     </el-form-item>
         </el-col>
@@ -64,7 +64,7 @@
 
     <el-row>
         <el-col :span="12">
-            <el-form-item label="性别">
+            <el-form-item label="性别" prop="sex">
                 <el-select v-model="formUser.sex" placeholder="请选择性别">
         <el-option label="男" value="0" />
         <el-option label="女" value="1" />
@@ -73,7 +73,7 @@
         </el-col>
 
         <el-col :span="12">
-            <el-form-item label="出生日期">
+            <el-form-item label="出生日期" prop="birth">
                 <el-date-picker
             v-model="formUser.birth"
             type="date"
@@ -85,7 +85,7 @@
         </el-col>
     </el-row>
     <el-row>
-        <el-form-item label="地址">
+        <el-form-item label="地址" prop="addr">
       <el-input v-model="formUser.addr" placeholder="请输入地址"/>
     </el-form-item>
     </el-row>
@@ -185,6 +185,31 @@ const changePage = (page)=> {
 const handleSearch = ()=> {
   config.name = formInline.keyword;
   getUserData(config)
+}
+// 格式化日期
+const timeFormat = (time) => {
+    var time = new Date(time);
+    var year = time.getFullYear();
+    var month = time.getMonth()+1;
+    var date = time.getDate();
+    function add(m) {
+        return m < 10 ? "0"+ m : m;
+    }
+    return year + "-" + add(month) + "-" + add(date);
+}
+
+// 添加用户
+const onSubmit =async ()=> {
+    formUser.birth = timeFormat(formUser.birth)
+    let res = await proxy.$api.addUser(formUser);
+    // console.log(res);
+    // 1.添加成功 -》清空输入框，退出添加页面，重新调用获取新数据
+    if(res) {
+        dialogVisible.value = false;
+        // 添加prop属性才生效
+        proxy.$refs.userForm.resetFields();
+        getUserData(config);
+    }
 }
 
 onMounted(()=> {

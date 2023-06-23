@@ -30,7 +30,16 @@ export default {
         return request({
             url: '/user/getUser',
             method: 'get',
-            // mock为false否则调用的是mock线上数据
+            // mock为false否则调用的是线上fastmock数据
+            mock: false,
+            data: params
+        })
+    },
+    // 新增用户
+    addUser(params) {
+        return request({
+            url: '/user/add',
+            method: 'post',
             mock: false,
             data: params
         })
