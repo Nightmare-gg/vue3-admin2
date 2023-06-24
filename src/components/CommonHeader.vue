@@ -22,7 +22,7 @@
     <template #dropdown>
       <el-dropdown-menu>
         <el-dropdown-item>个人中心</el-dropdown-item>
-        <el-dropdown-item>退出</el-dropdown-item>
+        <el-dropdown-item @click="handleLoginout">退出</el-dropdown-item>
       </el-dropdown-menu>
     </template>
   </el-dropdown>
@@ -33,8 +33,9 @@
 <script setup>
 import { computed } from 'vue';
 import {useStore} from 'vuex'
+import { useRouter } from 'vue-router';
 let store = useStore()
-
+let router = useRouter()
 let handleCollapse = ()=> {
   // 调用vuex中的mutations
   store.commit("updateIsCollapse");
@@ -44,6 +45,14 @@ let handleCollapse = ()=> {
 const current = computed(()=> {
   return store.state.currentMenu;
 })
+
+// 点击退出返回登录页面
+const handleLoginout = ()=> {
+  store.commit('cleanMenu')
+  router.push({
+    name:"login",
+  })
+}
 </script>
 <style scoped lang="less">
 .header {

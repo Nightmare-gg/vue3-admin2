@@ -65,6 +65,11 @@ export default createStore({
             menuArray.forEach(item=> {
                 router.addRoute('home1',item)
             })
+        },
+        // 退出清除数据
+        cleanMenu(state) {
+            state.menu = []
+            localStorage.removeItem('menu')
         }
     }
 })
