@@ -17,6 +17,7 @@ const app = createApp(App)
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
     app.component(key, component)
   }
+  store.commit("addMenu",router);
   // 挂载到全局
 app.config.globalProperties.$api = api
 app.use(router).use(store)
