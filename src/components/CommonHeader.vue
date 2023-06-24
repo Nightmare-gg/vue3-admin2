@@ -49,6 +49,7 @@ const current = computed(()=> {
 // 点击退出返回登录页面
 const handleLoginout = ()=> {
   store.commit('cleanMenu')
+  store.commit('cleanToken')
   router.push({
     name:"login",
   })
