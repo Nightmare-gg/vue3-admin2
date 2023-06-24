@@ -43,6 +43,9 @@
 <script setup>
 import { useRouter } from 'vue-router';
 import {useStore} from 'vuex'
+const router = useRouter()
+    const store = useStore()
+    const asyncList = store.state.menu;
     const list = [
     // {
     //       path: '/',
@@ -88,14 +91,12 @@ import {useStore} from 'vuex'
         }
     ];
     const noChildren = ()=> {
-        return list.filter((item)=> !item.children);
+        return asyncList.filter((item)=> !item.children);
+    }
+    const hasChildren = ()=> {
+        return asyncList.filter((item)=> item.children);
     }
 
-    const hasChildren = ()=> {
-        return list.filter((item)=> item.children);
-    }
-    const router = useRouter()
-    const store = useStore()
     // 点击左侧菜单
     const clickMenu =(item)=> {
       router.push({

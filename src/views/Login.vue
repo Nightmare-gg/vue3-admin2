@@ -2,18 +2,37 @@
     <el-form :model="loginForm" class="login_container">
         <h3>登录系统</h3>
         <el-form-item>
-            <el-input type="input" placeholder="请输入账号"></el-input>
+            <el-input type="input" placeholder="请输入账号" v-model="loginForm.username"></el-input>
         </el-form-item>
         <el-form-item>
-            <el-input type="password" placeholder="请输入密码"></el-input>
+            <el-input type="password" placeholder="请输入密码" v-model="loginForm.password"></el-input>
         </el-form-item>
         <el-form-item>
-            <el-button type="primary">登录</el-button>
+            <el-button type="primary" @click="login">登录</el-button>
         </el-form-item>
     </el-form>
 </template>
 
 <script setup>
+import { reactive,getCurrentInstance } from 'vue';
+import {useStore} from 'vuex'
+import { useRouter } from 'vue-router';
+const loginForm = reactive({
+    username: 'admin',
+    password: 'admin'
+})
+const {proxy} = getCurrentInstance()
+const store = useStore()
+const router = useRouter()
+const login =async ()=> {
+ const res = await proxy.$api.getMenu(loginForm);
+//  console.log(res);
+    store.commit('setMenu',res.menu);
+    router.push({
+        name: 'home',
+    })
+}
+
 </script>
 <style scoped lang="less">
     .login_container {

@@ -61,6 +61,15 @@ export default {
             mock: false,
             data: params
         })
+    },
+    // 不同用户登录展示不同的菜单列表
+    getMenu(params) {
+        return request({
+            url: '/permission/getMenu',
+            method: 'post',
+            mock: false,
+            data: params
+        })
     }
 
 }

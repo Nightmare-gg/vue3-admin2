@@ -3,6 +3,7 @@ export default createStore({
     state: {
         isCollapse: true,
         currentMenu: null,
+        menu: [],
         tabsList: [
             {
                 path: '/',
@@ -32,6 +33,11 @@ export default createStore({
         closeTab(state, val) {
             let res = state.tabsList.findIndex(item => item.name === val.name) 
             state.tabsList.splice(res,1)
+        },
+        // 不同用户显示不同菜单
+        setMenu(state,val) {
+            state.menu = val
+            localStorage.setItem('menu',JSON.stringify(val))
         }
     }
 })
