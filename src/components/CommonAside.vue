@@ -1,6 +1,6 @@
 
 <template>
-    <el-aside :width="isCollapse ? '64px' : '200px'">
+    <el-aside :width="$store.state.isCollapse ? '180px' : '64px'">
         <el-menu
         class="el-menu-vertical-demo" 
         background-color="#545c64"
